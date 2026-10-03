@@ -1,0 +1,6 @@
+{
+  "editor.inlineSuggest.suppressSuggestions": true,
+  "github.copilot.chat.languageContext.typescript7.enabled": true,
+  "emmet.useInlineCompletions": true,
+  "chat.disableAIFeatures": false
+}

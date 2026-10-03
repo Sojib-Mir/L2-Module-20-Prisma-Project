@@ -39,19 +39,92 @@ const getPostStats = catchAsync(
 );
 
 const getMyPosts = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const authorId = req.user?.id;
+
+    const result = await postService.getMyPosts(authorId as string);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "My Post Retrived Successfully!",
+      data: result,
+    });
+  },
 );
 
 const getPostById = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const postId = req.params.postId;
+
+    if (!postId) {
+      throw new Error("Post Id Required In Params");
+    }
+
+    const result = await postService.getPostById(postId as string);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Post Retrived Successfully!",
+      data: result,
+    });
+  },
 );
 
 const updatePost = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const authorId = req.user?.id;
+    const isAdmin = req.user?.role === "ADMIN";
+
+    const postId = req.params.postId;
+
+    if (!postId) {
+      throw new Error("Post Id Required In Params");
+    }
+
+    const payload = req.body;
+
+    const result = await postService.updatePost(
+      postId as string,
+      payload,
+      authorId as string,
+      isAdmin,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Post Update Successfully!",
+      data: result,
+    });
+  },
 );
 
 const deletePost = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const authorId = req.user?.id;
+    const isAdmin = req.user?.role === "ADMIN";
+
+    const postId = req.params.postId;
+
+    if (!postId) {
+      throw new Error("Post Id Required In Params");
+    }
+
+    const result = await postService.deletePost(
+      postId as string,
+      authorId as string,
+      isAdmin,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Post Deleted Successfully!",
+      data: result,
+    });
+  },
 );
 
 export const postController = {
