@@ -15,6 +15,91 @@ const createPost = async (payload: ICreatePostPayload, userId: string) => {
 
 const getAllPosts = async () => {
   const posts = await prisma.post.findMany({
+    // filtering / exact with out AND operator
+
+    // where: {
+    //   title: "My 2nd post",
+    //   content: "Ronaldo",
+    // },
+
+    // filtering / exact with AND operator
+    // where: {
+    //   AND: [
+    //     {
+    //       title: "My 2nd post",
+    //     },
+    //     {
+    //       content: "Ronaldo",
+    //     },
+    //   ],
+    // },
+
+    /* Seraching /partial match */
+
+    // where: {
+    //   title: {
+    //     contains: "Ronaldo",
+    //     mode: "insensitive",
+    //   },
+    //   content: {
+    //     contains: "Ronaldo",
+    //     mode: "insensitive",
+    //   },
+    // },
+
+    /* serching / partial search with OR operator */
+
+    // where: {
+    //   OR: [
+    //     {
+    //       title: {
+    //         contains: "Ronaldo",
+    //         mode: "insensitive",
+    //       },
+    //     },
+
+    //     {
+    //       content: {
+    //         contains: "ronaldo",
+    //         mode: "insensitive",
+    //       },
+    //     },
+    //   ],
+    // },
+
+    /* combining search (OR operator) and filtering (AND) */
+
+    where: {
+      // filtering & searching combined
+      AND: [
+        {
+          // search
+          OR: [
+            {
+              title: {
+                contains: "Ronal",
+                mode: "insensitive",
+              },
+            },
+            {
+              content: {
+                contains: "Ronal",
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+
+        // filter
+        {
+          title: "Ronaldo",
+        },
+        {
+          content: "Ronaldo",
+        },
+      ],
+    },
+
     include: {
       author: {
         omit: {
@@ -163,59 +248,6 @@ const deletePost = async (
 
 const getPostStats = async () => {
   const transactionResult = await prisma.$transaction(async (tx) => {
-    // const totalPosts = await tx.post.count();
-
-    // const totalPublishedPosts = await tx.post.count({
-    //   where: {
-    //     status: PostStatus.PUBLISHED,
-    //   },
-    // });
-
-    // const totalDraftPosts = await tx.post.count({
-    //   where: {
-    //     status: PostStatus.DRAFT,
-    //   },
-    // });
-
-    // const totalArchivedPosts = await tx.post.count({
-    //   where: {
-    //     status: PostStatus.ARCHIVED,
-    //   },
-    // });
-
-    // const totalComments = await tx.comment.count();
-
-    // const totalApprovedComments = await tx.comment.count({
-    //   where: {
-    //     status: CommentStatus.APPROVED,
-    //   },
-    // });
-
-    // const totalRejectedComments = await tx.comment.count({
-    //   where: {
-    //     status: CommentStatus.REJECT,
-    //   },
-    // });
-
-    // const totalPostViewsAggregate = await tx.post.aggregate({
-    //   _sum: {
-    //     views: true,
-    //   },
-    // });
-
-    // const totalPostViews = totalPostViewsAggregate._sum.views;
-
-    // return {
-    // totalPosts,
-    // totalPublishedPosts,
-    // totalDraftPosts,
-    // totalArchivedPosts,
-    // totalComments,
-    // totalApprovedComments,
-    // totalRejectedComments,
-    // totalPostViews,
-    // };
-
     const [
       totalPosts,
       totalPublishedPosts,
