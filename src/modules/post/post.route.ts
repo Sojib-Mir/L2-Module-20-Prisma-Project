@@ -14,7 +14,7 @@ router.post(
 router.get("/", postController.getAllPosts);
 
 router.get(
-  "/status",
+  "/stats",
   auth(Role.ADMIN, Role.USER, Role.AUTHOR),
   postController.getPostStats,
 );
